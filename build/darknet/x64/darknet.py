@@ -238,7 +238,7 @@ def detect(net, meta, image, thresh=.5, hier_thresh=.5, nms=.45, debug= False):
     if debug: print("freed image")
     return ret
 
-def detect_image(net, meta, im, thresh=.5, hier_thresh=.5, nms=.45, debug= False):
+def detect_image(net, meta, im, thresh=.5, hier_thresh=.5, nms=.45, debug= False, altNames=None):
     #import cv2
     #custom_image_bgr = cv2.imread(image) # use: detect(,,imagePath,)
     #custom_image = cv2.cvtColor(custom_image_bgr, cv2.COLOR_BGR2RGB)
@@ -246,6 +246,7 @@ def detect_image(net, meta, im, thresh=.5, hier_thresh=.5, nms=.45, debug= False
     #import scipy.misc
     #custom_image = scipy.misc.imread(image)
     #im, arr = array_to_image(custom_image)		# you should comment line below: free_image(im)
+
     num = c_int(0)
     if debug: print("Assigned num")
     pnum = pointer(num)
@@ -270,9 +271,9 @@ def detect_image(net, meta, im, thresh=.5, hier_thresh=.5, nms=.45, debug= False
             if dets[j].prob[i] > 0:
                 b = dets[j].bbox
                 if altNames is None:
-                    nameTag = meta.names[i]
+                    nameTag = ("Class %s" % i).encode("utf8") #meta.names[i] changed because the program crashes when accessing meta.names
                 else:
-                    nameTag = altNames[i]
+                    nameTag = altNames[i].encode("utf8")
                 if debug:
                     print("Got bbox", b)
                     print(nameTag)
